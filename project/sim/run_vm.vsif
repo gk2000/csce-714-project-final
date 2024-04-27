@@ -1,0 +1,85 @@
+session cpu_regress
+{
+	top_dir : $ENV(PWD)/regression/ ;
+	pre_session_script : <text> echo "pre_session_script" </text>;
+};
+
+
+group all_test {
+
+      run_script: "cd $ENV(PWD) ; irun -f run_vm.f +UVM_TESTNAME=read_miss_icache" ;
+      scan_script: "vm_scan.pl ius.flt shell.flt" ;
+      count : 2;
+      pre_commands: "";
+      timeout: 13000000;
+      sv_seed: random;
+
+
+
+      test test1 {
+      	   run_script: "cd $ENV(PWD) ; irun -f run_vm.f +UVM_TESTNAME=read_miss_icache -define TEST1" ;
+           scan_script: "vm_scan.pl ius.flt shell.flt" ;
+	   count : 10;
+      };
+
+      test test2 {
+      	   run_script: "cd $ENV(PWD) ; irun -f run_vm.f +UVM_TESTNAME=four_writes_one_read -define TEST2" ;
+           scan_script: "vm_scan.pl ius.flt shell.flt" ;
+	   count : 10;
+      };
+
+      test test3 {
+      	   run_script: "cd $ENV(PWD) ; irun -f run_vm.f +UVM_TESTNAME=multiple_read_same_block -define TEST3" ;
+           scan_script: "vm_scan.pl ius.flt shell.flt" ;
+	   count : 10;
+      };
+
+      test test4 {
+      	   run_script: "cd $ENV(PWD) ; irun -f run_vm.f +UVM_TESTNAME=multiple_write_same_block -define TEST4" ;
+           scan_script: "vm_scan.pl ius.flt shell.flt" ;
+	   count : 10;
+      };
+
+      test test5 {
+      	   run_script: "cd $ENV(PWD) ; irun -f run_vm.f +UVM_TESTNAME=read_miss_dcache -define TEST5" ;
+           scan_script: "vm_scan.pl ius.flt shell.flt" ;
+	   count : 10;
+      };
+
+      test test6 {
+      	   run_script: "cd $ENV(PWD) ; irun -f run_vm.f +UVM_TESTNAME=read_miss_dcache -define TEST6" ;
+           scan_script: "vm_scan.pl ius.flt shell.flt" ;
+	   count : 10;
+      };
+
+      test test7 {
+      	   run_script: "cd $ENV(PWD) ; irun -f run_vm.f +UVM_TESTNAME=completely_random_simultaneous -define TEST7" ;
+           scan_script: "vm_scan.pl ius.flt shell.flt" ;
+	   count : 10;
+      };
+
+      test test8 {
+      	   run_script: "cd $ENV(PWD) ; irun -f run_vm.f +UVM_TESTNAME=write_read -define TEST8" ;
+           scan_script: "vm_scan.pl ius.flt shell.flt" ;
+	   count : 10;
+      };
+
+      test test9 {
+      	   run_script: "cd $ENV(PWD) ; irun -f run_vm.f +UVM_TESTNAME=random_writes -define TEST9" ;
+           scan_script: "vm_scan.pl ius.flt shell.flt" ;
+	   count : 10;
+      };
+
+      test test10 {
+      	   run_script: "cd $ENV(PWD) ; irun -f run_vm.f +UVM_TESTNAME=random_write_read -define TEST10" ;
+           scan_script: "vm_scan.pl ius.flt shell.flt" ;
+	   count : 10;
+      };
+
+      test test11 {
+      	   run_script: "cd $ENV(PWD) ; irun -f run_vm.f +UVM_TESTNAME=all_cores_read_snoop -define TEST11" ;
+           scan_script: "vm_scan.pl ius.flt shell.flt" ;
+	   count : 10;
+      };
+
+};
