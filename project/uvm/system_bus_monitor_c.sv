@@ -33,7 +33,11 @@ class system_bus_monitor_c extends uvm_monitor;
             illegal_bins all_snoop = {4'b1111};
         }
     
-        REQ_SERV_BY: coverpoint s_packet.req_serviced_by;
+        REQ_SERV_BY: coverpoint s_packet.req_serviced_by
+        {
+            ignore_bins SERVICE_NONE = {SERV_NONE};
+
+        }
 
         WR_DATA_SNOOP: coverpoint s_packet.wr_data_snoop
         {
@@ -49,6 +53,7 @@ class system_bus_monitor_c extends uvm_monitor;
 
         DIRTY_BLK_ADDR: coverpoint s_packet.proc_evict_dirty_blk_addr{
             option.auto_bin_max = 20;
+            illegal_bins NO_ICACHE_ADDR_IN_DIRTY_BLK_ADDR = {[1:1073741824]};
         }
 
         DIRTY_BLK_DATA: coverpoint s_packet.proc_evict_dirty_blk_data{
@@ -65,6 +70,7 @@ class system_bus_monitor_c extends uvm_monitor;
         //TODO: Add relevant cross coverage (examples shown above)
         X_REQUEST_ADDRESS__REQ_TYPE: cross REQUEST_TYPE, REQUEST_ADDRESS{
             ignore_bins NO_REQ_TO_ICACHE= binsof(REQUEST_TYPE) && binsof(REQUEST_ADDRESS) intersect {[0:1073741824]};
+            ignore_bins NO_ICACHE_RD_ON_NON_ICACHE_ADDR = binsof(REQUEST_TYPE) intersect {ICACHE_RD} && binsof(REQUEST_ADDRESS) intersect {[1073741825:$]};
         }
         X_REQUEST_ADDRESS__SNOOP_WR_REQ_FLAG: cross REQUEST_ADDRESS, SNOOP_WR_REQ_FLAG{
             ignore_bins NO_SNOOP_TO_ICACHE= binsof(SNOOP_WR_REQ_FLAG) && binsof(REQUEST_ADDRESS) intersect {[0:1073741824]};
@@ -79,11 +85,23 @@ class system_bus_monitor_c extends uvm_monitor;
         X_PROC__DIRTY_BLK_DATA: cross REQUEST_PROCESSOR, DIRTY_BLK_DATA;
         X_PROC__WR_DATA_SNOOP: cross REQUEST_PROCESSOR, WR_DATA_SNOOP;
         X_PROC__SNOOP_REQ_FLAG: cross REQUEST_PROCESSOR, SNOOP_WR_REQ_FLAG;
-        X_PROC__REQ_SERV_BY: cross REQUEST_PROCESSOR, REQ_SERV_BY;
-        X_PROC__BUS_REQ_SNOOP: cross REQUEST_PROCESSOR, BUS_REQ_SNOOP;
+        X_PROC__REQ_SERV_BY: cross REQUEST_PROCESSOR, REQ_SERV_BY
+        {
+            ignore_bins NO_SERV_NONE = binsof(REQUEST_PROCESSOR) && binsof(REQ_SERV_BY) intersect {SERV_NONE};
+            ignore_bins NO_SERV_SAME_PROC0 = binsof(REQUEST_PROCESSOR) intersect {REQ_PROC0} && binsof(REQ_SERV_BY) intersect {SERV_SNOOP0};
+            ignore_bins NO_SERV_SAME_PROC1 = binsof(REQUEST_PROCESSOR) intersect {REQ_PROC1} && binsof(REQ_SERV_BY) intersect {SERV_SNOOP1};
+            ignore_bins NO_SERV_SAME_PROC2 = binsof(REQUEST_PROCESSOR) intersect {REQ_PROC2} && binsof(REQ_SERV_BY) intersect {SERV_SNOOP2};
+            ignore_bins NO_SERV_SAME_PROC3 = binsof(REQUEST_PROCESSOR) intersect {REQ_PROC3} && binsof(REQ_SERV_BY) intersect {SERV_SNOOP3};
+
+        }
+        X_PROC__BUS_REQ_SNOOP: cross REQUEST_PROCESSOR, BUS_REQ_SNOOP
+        {
+            ignore_bins NO_SAME_PROC_SNOOP0 = binsof(REQUEST_PROCESSOR) intersect {REQ_PROC0} && binsof(BUS_REQ_SNOOP) intersect {4'b0001, 4'b0011, 4'b0101, 4'b0111, 4'b1001, 4'b1011, 4'b1101, 4'b1111};
+            ignore_bins NO_SAME_PROC_SNOOP1 = binsof(REQUEST_PROCESSOR) intersect {REQ_PROC1} && binsof(BUS_REQ_SNOOP) intersect {4'b0010, 4'b0011, 4'b0110, 4'b0111, 4'b1010, 4'b1011, 4'b1110, 4'b1111};
+            ignore_bins NO_SAME_PROC_SNOOP2 = binsof(REQUEST_PROCESSOR) intersect {REQ_PROC2} && binsof(BUS_REQ_SNOOP) intersect {4'b0100, 4'b0101, 4'b0110, 4'b0111, 4'b1100, 4'b1101, 4'b1110, 4'b1111};
+            ignore_bins NO_SAME_PROC_SNOOP3 = binsof(REQUEST_PROCESSOR) intersect {REQ_PROC3} && binsof(BUS_REQ_SNOOP) intersect {4'b1000, 4'b1001, 4'b1010, 4'b1011, 4'b1100, 4'b1101, 4'b1110, 4'b1111};
+        }
    
-
-
     endgroup
 
     // Virtual interface of used to observe system bus interface signals
