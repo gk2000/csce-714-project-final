@@ -154,13 +154,13 @@ class system_bus_monitor_c extends uvm_monitor;
             
 
             // bus request type
-            if (vi_sbus_if.bus_rd === 1'b1)
+            if (vi_sbus_if.bus_rd === 1'b1 && vi_sbus_if.addr_bus_lv1_lv2>=32'h4000_0000)
                 s_packet.bus_req_type = BUS_RD;
             else if (vi_sbus_if.bus_rdx === 1'b1)
                 s_packet.bus_req_type = BUS_RDX;
             else if (vi_sbus_if.invalidate === 1'b1)
                 s_packet.bus_req_type = INVALIDATE;
-            else if (vi_sbus_if.bus_rd === 1'b1 && vi_sbus_if.addr_bus_lv1_lv2<32'h4000_0000)
+            else if (vi_sbus_if.lv2_rd === 1'b1 && vi_sbus_if.addr_bus_lv1_lv2<32'h4000_0000)
                 s_packet.bus_req_type = ICACHE_RD;
 
             // proc which requested the bus access
