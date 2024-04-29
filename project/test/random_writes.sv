@@ -41,10 +41,11 @@ class random_writes_seq extends base_vseq;
  
         virtual task body();
             repeat(500) begin
-            `uvm_do_on_with(trans, p_sequencer.cpu_seqr[0], {request_type == WRITE_REQ; address>32'h4000_0000;})
-            `uvm_do_on_with(trans, p_sequencer.cpu_seqr[1], {request_type == WRITE_REQ; address>32'h4000_0000;})
-            `uvm_do_on_with(trans, p_sequencer.cpu_seqr[2], {request_type == WRITE_REQ; address>32'h4000_0000;})
-            `uvm_do_on_with(trans, p_sequencer.cpu_seqr[3], {request_type == WRITE_REQ; address>32'h4000_0000;})
+                `uvm_do_on_with(trans, p_sequencer.cpu_seqr[0], {request_type == WRITE_REQ; address>32'h4000_0000;})
+                `uvm_do_on_with(trans, p_sequencer.cpu_seqr[1], {request_type == WRITE_REQ; address>32'h4000_0000;})
+                `uvm_do_on_with(trans, p_sequencer.cpu_seqr[2], {request_type == WRITE_REQ; address>32'h4000_0000;})
+                `uvm_do_on_with(trans, p_sequencer.cpu_seqr[3], {request_type == WRITE_REQ; address>32'h4000_0000;})
+                `uvm_do_on_with(trans, p_sequencer.cpu_seqr[0], {request_type == WRITE_REQ; address>32'h4000_0000;})
             end
         endtask
  
